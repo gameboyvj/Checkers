@@ -1,13 +1,11 @@
-require "./piece.rb"
-require "./errors.rb"
 class Board
   attr_accessor :grid
-
+  attr_reader :winner
   def initialize
     @grid = Array.new(8){ Array.new(8){ nil } }
     setup_red
     setup_black
-
+    @winner = nil
   end
 
   def [](pos)
@@ -55,7 +53,7 @@ class Board
   end
 
   def render
-    puts "   #{("a".."h").to_a.join("  ")}"
+    puts "   #{(0..7).to_a.join("  ")}"
     @grid.each_with_index do |row, y|
       print "#{y} "
       y % 2 == 0 ? color = :light_white : color = :light_black
@@ -97,8 +95,13 @@ class Board
   end
 
   def over?
-    return true if @grid.flatten.compact.all? {|piece| piece.color == :red}
-    return true if @grid.flatten.compact.all? {|piece| piece.color == :black}
+    if @grid.flatten.compact.all? {|piece| piece.color == :red}
+      winner = :red
+      return true
+    end
+    if @grid.flatten.compact.all? {|piece| piece.color == :black}
+      winner = :black
+    end
     false
   end
 end

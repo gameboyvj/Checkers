@@ -13,21 +13,14 @@ class Game
   end
 
   def run
-
     until @board.over?
       @board.render
       @player1.turn
       @board.render
       @player2.turn
-
     end
-
+    puts "Game over #{@board.winner.to_s} wins"
   end
-
-  # def game_over?
-#     return true if @player1.num_pieces == 0 || @player2.num_pieces == 0
-#     false
-#   end
 end
 =begin
 load 'game.rb'
@@ -46,7 +39,7 @@ class HumanPlayer
 
   def turn
     begin
-      puts "#{name}, please select a piece    (0, 1)"
+      puts "#{name}, please select a piece.  Example: 0, 1"
       piece_position = gets.chomp.gsub(" ","").split(",").map!{|x| x.to_i}
       piece = @board[piece_position]
       raise WrongColorError if piece.color.nil? || piece.color != @color
