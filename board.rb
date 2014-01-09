@@ -1,6 +1,6 @@
 require "./piece.rb"
 class Board
-  attr_accessor :board
+  attr_accessor :grid
   def initialize
     @grid = Array.new(8){ Array.new(8){ nil } }
     setup_red
