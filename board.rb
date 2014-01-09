@@ -19,7 +19,7 @@ class Board
 
   def setup_red
     (0..2).each do |y|
-      if y % 2 == 0
+      if y % 2 != 0
         (0..3).each do |x|
           pos = [x * 2 + 1, y]
           self[pos]= Piece.new([x * 2 + 1, y], self, :red)
