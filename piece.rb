@@ -9,7 +9,6 @@ class Piece
   end
 
   def perform_slide(stop)
-
     possible_positions = []
     deltas = move_diffs_slide
     deltas.each do |delta|

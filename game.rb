@@ -2,14 +2,13 @@ require "./board.rb"
 require "./piece.rb"
 require "./errors.rb"
 require "colorize"
+
 class Game
 
   def initialize(name1, name2)
-
     @board = Board.new
     @player1 = HumanPlayer.new(name1, :black, @board)
     @player2 = HumanPlayer.new(name2, :red, @board)
-    @players = {@player1 => :black, @player2 => :red}
   end
 
   def run
@@ -24,13 +23,12 @@ class Game
 end
 
 class HumanPlayer
-  attr_reader :name, :color, :num_pieces
+  attr_reader :name, :color
 
-  def initialize(name, color, board, num_pieces = 12)
+  def initialize(name, color, board)
     @name = name
     @color = color
     @board = board
-    @num_pieces = num_pieces
   end
 
   def turn
@@ -43,8 +41,8 @@ class HumanPlayer
         puts "Wrong color, try again"
         retry
     end
-    sequence = []
 
+    sequence = []
     loop do
       puts "Please enter a move sequence 1 move at a time"
       puts "Enter 'd' to stop"
@@ -58,8 +56,6 @@ class HumanPlayer
 end
 
 if __FILE__ == $PROGRAM_NAME
-
   game = Game.new(ARGV.shift, ARGV.shift)
   game.run
 end
-

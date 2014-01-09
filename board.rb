@@ -1,6 +1,7 @@
 class Board
   attr_accessor :grid
   attr_reader :winner
+
   def initialize
     @grid = Array.new(8){ Array.new(8){ nil } }
     setup_red
@@ -77,7 +78,6 @@ class Board
     piece = self[start]
     self[stop] = piece
     piece = nil
-
   end
 
   def dup
