@@ -22,11 +22,7 @@ class Game
     puts "Game over #{@board.winner.to_s} wins"
   end
 end
-=begin
-load 'game.rb'
-g=Game.new("B","R")
-g.run
-=end
+
 class HumanPlayer
   attr_reader :name, :color, :num_pieces
 
@@ -60,3 +56,10 @@ class HumanPlayer
   end
 
 end
+
+if __FILE__ == $PROGRAM_NAME
+
+  game = Game.new(ARGV.shift, ARGV.shift)
+  game.run
+end
+
