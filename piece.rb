@@ -8,14 +8,7 @@ class Piece
     @color = color
     @king = false
   end
-=begin
-  load 'board.rb'
-  b=Board.new
-  b[[2,2]].perform_slide([3,3])
-  b[[1,5]].perform_slide([2,4])
-  b[[3,3]].perform_jump([1,5])
 
-=end
   def perform_slide(stop)
 
     possible_positions = []
@@ -28,9 +21,7 @@ class Piece
     end
 
     if possible_positions.include?(stop)
-      @board[stop]=self
-      @board[@position]=nil
-      @position = stop
+      make_move(stop)
       maybe_promote?
       return true
     end
@@ -45,9 +36,9 @@ class Piece
     curr_x, curr_y = @position
 
     jump_deltas.each_with_index do |delta, index|
-      possible_position = [curr_x+delta[0], curr_y+delta[1]]
+      possible_position = [curr_x + delta[0], curr_y + delta[1]]
       adjacent_x, adjacent_y = slide_deltas[index]
-      middle_position=[curr_x+adjacent_x, curr_y+adjacent_y]
+      middle_position=[curr_x + adjacent_x, curr_y + adjacent_y]
 
       if (!@board[middle_position].nil?) && (is_valid?(possible_position)) && (@board[middle_position].color != @color)
         possible_positions << possible_position
@@ -56,9 +47,7 @@ class Piece
 
     if possible_positions.include?(stop)
       middle_piece_position = get_average(@position, stop)
-      @board[stop]=self
-      @board[@position]=nil
-      @position = stop
+      make_move(stop)
       @board[middle_piece_position] = nil
       maybe_promote?
       return true
@@ -66,6 +55,19 @@ class Piece
     false
   end
 
+  def make_move(stop)
+    @board[stop]=self
+    @board[@position]=nil
+    @position = stop
+
+  end
+
+  def perform_moves(move_sequence)
+
+
+  end
+
+  private
   def get_average(start, stop)
      [(start[0] + stop[0])/2, (start[1] + stop[1])/2]
   end
