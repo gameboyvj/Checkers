@@ -1,12 +1,12 @@
 require 'debugger'
 class Piece
-  attr_accessor :position, :king, :color
+  attr_accessor :position, :board, :color, :king
 
-  def initialize(position, board, color)
+  def initialize(position, board, color, king = false)
     @position = position
     @board = board
     @color = color
-    @king = false
+    @king = king
   end
 
   def perform_slide(stop)
@@ -14,7 +14,7 @@ class Piece
     possible_positions = []
     deltas = move_diffs_slide
     deltas.each do |delta|
-      possible_position = [@position[0]+delta[0], @position[1]+delta[1]]
+      possible_position = [@position[0] + delta[0], @position[1]+delta[1]]
       if is_valid?(possible_position)
         possible_positions << possible_position
       end
@@ -40,7 +40,7 @@ class Piece
       adjacent_x, adjacent_y = slide_deltas[index]
       middle_position=[curr_x + adjacent_x, curr_y + adjacent_y]
 
-      if (!@board[middle_position].nil?) && (is_valid?(possible_position)) && (@board[middle_position].color != @color)
+      if @board[middle_position] && is_valid?(possible_position) && (@board[middle_position].color != @color)
         possible_positions << possible_position
       end
     end
@@ -62,9 +62,41 @@ class Piece
 
   end
 
+  def perform_moves!(move_sequence)
+    if move_sequence.length == 1
+      raise InvalidMoveError if !perform_slide(move_sequence[0])
+    else
+      move_sequence.each_with_index do |position, index|
+        raise InvalidMoveError if !perform_jump(position)
+      end
+    end
+  end
+
+  def valid_move_seq?(move_sequence)
+
+    duped_board = @board.dup
+    first_piece = self.dup
+    first_piece.board = duped_board
+    begin
+      first_piece.perform_moves!(move_sequence)
+    rescue InvalidMoveError
+      puts "Bad move"
+      return false
+    end
+    true
+
+  end
+
   def perform_moves(move_sequence)
+    if valid_move_seq?(move_sequence)
+      perform_moves!(move_sequence)
+    else
+      raise InvalidMoveError
+    end
+  end
 
-
+  def dup
+    Piece.new(@position, @board, @color, @king)
   end
 
   private
@@ -108,3 +140,10 @@ class Piece
     end
   end
 end
+
+=begin
+load 'board.rb'
+b=Board.new
+b[[1,2]].perform_moves([[2,3]])
+
+=end
