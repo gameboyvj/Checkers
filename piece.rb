@@ -93,8 +93,6 @@ class Piece
   def perform_moves(move_sequence)
     if valid_move_seq?(move_sequence)
       perform_moves!(move_sequence)
-    else
-      raise InvalidMoveError
     end
   end
 

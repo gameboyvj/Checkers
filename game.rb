@@ -1,7 +1,7 @@
 require "./board.rb"
 require "./piece.rb"
 require "./errors.rb"
-
+require "colorize"
 class Game
 
   def initialize(name1, name2)
@@ -14,7 +14,7 @@ class Game
 
   def run
 
-    until game_over?
+    until @board.over?
       @board.render
       @player1.turn
       @board.render
@@ -24,14 +24,14 @@ class Game
 
   end
 
-  def game_over?
-    return true if @player1.num_pieces == 0 || @player2.num_pieces == 0
-    false
-  end
+  # def game_over?
+#     return true if @player1.num_pieces == 0 || @player2.num_pieces == 0
+#     false
+#   end
 end
 =begin
 load 'game.rb'
-g=Game.new("v","j")
+g=Game.new("B","R")
 g.run
 =end
 class HumanPlayer
@@ -47,9 +47,9 @@ class HumanPlayer
   def turn
     begin
       puts "#{name}, please select a piece    (0, 1)"
-      piece_position = gets.chomp.split(", ").map!{|x| x.to_i}
+      piece_position = gets.chomp.gsub(" ","").split(",").map!{|x| x.to_i}
       piece = @board[piece_position]
-      raise WrongColorError if piece.color != @color
+      raise WrongColorError if piece.color.nil? || piece.color != @color
     rescue WrongColorError => e
         puts "Wrong color, try again"
         retry
@@ -61,8 +61,7 @@ class HumanPlayer
       puts "Enter 'd' to stop"
       move = gets.chomp
       break if move == "d"
-      sequence += [move.split(", ").map!{|x| x.to_i}]
-      p sequence
+      sequence += [move.gsub(" ","").split(",").map!{|x| x.to_i}]
     end
     piece.perform_moves(sequence)
   end

@@ -7,6 +7,7 @@ class Board
     @grid = Array.new(8){ Array.new(8){ nil } }
     setup_red
     setup_black
+
   end
 
   def [](pos)
@@ -54,16 +55,18 @@ class Board
   end
 
   def render
-    puts "  0 1 2 3 4 5 6 7"
+    puts "   #{("a".."h").to_a.join("  ")}"
     @grid.each_with_index do |row, y|
       print "#{y} "
+      y % 2 == 0 ? color = :light_white : color = :light_black
       row.each_with_index do |value, x|
+        color == :light_white ? color = :light_black : color = :light_white
         if value.nil?
-          print "_ "
+          print "   ".colorize(:background => color)
         elsif value.color == :red
-          print "R "
+          print " \u25CF ".encode.colorize(:color =>:red, :background => color)
         else
-          print "B "
+          print " \u25CF ".encode.colorize(:background => color)
         end
 
       end
@@ -91,5 +94,11 @@ class Board
       end
     end
     dup_board
+  end
+
+  def over?
+    return true if @grid.flatten.compact.all? {|piece| piece.color == :red}
+    return true if @grid.flatten.compact.all? {|piece| piece.color == :black}
+    false
   end
 end
