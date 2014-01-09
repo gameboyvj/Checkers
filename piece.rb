@@ -1,4 +1,3 @@
-require 'debugger'
 class Piece
   attr_accessor :position, :board, :color, :king
 
@@ -132,7 +131,7 @@ class Piece
     false
   end
 
-  def maybe_promote?
+  def maybe_promote
     if @color == :white && @position[1] == 0
       @king = true
     elsif @color == :black && @position[1] == 7

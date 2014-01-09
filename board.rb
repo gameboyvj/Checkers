@@ -1,12 +1,10 @@
-require "./piece.rb"
-require "./errors.rb"
 class Board
   attr_accessor :grid
 
   def initialize
     @grid = Array.new(8){ Array.new(8){ nil } }
     setup_red
-    setup_white
+    setup_black
   end
 
   def [](pos)
@@ -36,17 +34,17 @@ class Board
     nil
   end
 
-  def setup_white
+  def setup_black
     (5..7).each do |y|
       if y % 2 != 0
         (0..3).each do |x|
           pos = [x * 2, y]
-          self[pos] = Piece.new([x*2,y], self, :white)
+          self[pos] = Piece.new([x*2,y], self, :black)
         end
       else
         (0..3).each do |x|
           pos = [x * 2 + 1, y]
-          self[pos] = Piece.new([x * 2 + 1, y], self, :white)
+          self[pos] = Piece.new([x * 2 + 1, y], self, :black)
         end
       end
     end
@@ -63,7 +61,7 @@ class Board
         elsif value.color == :red
           print "R "
         else
-          print "W "
+          print "B "
         end
 
       end
