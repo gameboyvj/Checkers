@@ -145,5 +145,8 @@ end
 load 'board.rb'
 b=Board.new
 b[[1,2]].perform_moves([[2,3]])
-
+b[[2,3]].perform_moves([[1,4]])
+b[[5,2]].perform_moves([[6,3]])
+b[[4,1]].perform_moves([[5,2]])
+b[[0,5]].perform_moves([[2,3],[4,1]])
 =end

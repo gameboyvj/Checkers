@@ -54,8 +54,9 @@ class Board
   end
 
   def render
-
+    puts "  0 1 2 3 4 5 6 7"
     @grid.each_with_index do |row, y|
+      print "#{y} "
       row.each_with_index do |value, x|
         if value.nil?
           print "_ "
