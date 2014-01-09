@@ -21,7 +21,7 @@ class Piece
 
     if possible_positions.include?(stop)
       make_move(stop)
-      maybe_promote?
+      maybe_promote
       return true
     end
 
@@ -48,7 +48,7 @@ class Piece
       middle_piece_position = get_average(@position, stop)
       make_move(stop)
       @board[middle_piece_position] = nil
-      maybe_promote?
+      maybe_promote
       return true
     end
     false
@@ -63,7 +63,11 @@ class Piece
 
   def perform_moves!(move_sequence)
     if move_sequence.length == 1
-      raise InvalidMoveError if !perform_slide(move_sequence[0])
+      if !perform_slide(move_sequence[0])
+        if !perform_jump(move_sequence[0])
+          raise InvalidMoveError
+        end
+      end
     else
       move_sequence.each_with_index do |position, index|
         raise InvalidMoveError if !perform_jump(position)
@@ -106,7 +110,7 @@ class Piece
   def move_diffs_slide
     if @king
       [ [1, 1], [-1, 1], [1, -1], [-1, -1] ]
-    elsif @color == :white
+    elsif @color == :black
       [ [1, -1], [-1, -1] ]
     else
       [[1, 1], [-1, 1] ]
@@ -116,7 +120,7 @@ class Piece
   def move_diffs_jump
     if @king
       [[2, 2],[-2, 2], [2, -2], [-2, -2]]
-    elsif @color == :white
+    elsif @color == :black
       [[2, -2], [-2, -2]]
     else
       [[2, 2],[-2, 2]]
@@ -132,9 +136,9 @@ class Piece
   end
 
   def maybe_promote
-    if @color == :white && @position[1] == 0
+    if @color == :black && @position[1] == 0
       @king = true
-    elsif @color == :black && @position[1] == 7
+    elsif @color == :red && @position[1] == 7
       @king = true
     end
   end
