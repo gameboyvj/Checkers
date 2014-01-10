@@ -11,6 +11,7 @@ class Game
     @player2 = HumanPlayer.new(name2, :red, @board)
   end
 
+  # REV: it works! good job.
   def run
     until @board.over?
       @board.render
@@ -25,12 +26,14 @@ end
 class HumanPlayer
   attr_reader :name, :color
 
+  # REV: in the spirit of making every object do as little as possible, it's might be a good idea to keep player objects away from the board.
   def initialize(name, color, board)
     @name = name
     @color = color
     @board = board
   end
 
+  # REV: this is a long method. You might make it shorter by combining all of the user's input into one prompt, and then converting it to an array of positions to move to/from.
   def turn
     begin
       puts "#{name}, please select a piece.  Example: 0, 1"
@@ -48,6 +51,8 @@ class HumanPlayer
       puts "Enter 'd' to stop"
       move = gets.chomp
       break if move == "d"
+      # REV: I think this is a place to use Integer(x) rather than x.to_i, since to_i will convert non-numbers to 0, leading to unexpected behavior, while Integer("a") would give you an argument error.
+      # REV: Also, maybe String#strip would be more intuitive than gsub?
       sequence += [move.gsub(" ","").split(",").map!{|x| x.to_i}]
     end
     piece.perform_moves(sequence)

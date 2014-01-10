@@ -11,6 +11,7 @@ class Piece
   def perform_slide(stop)
     possible_positions = []
     deltas = move_diffs_slide
+    # REV: instead of each & <<, it seems like map and select are more ruby-style.
     deltas.each do |delta|
       possible_position = [@position[0] + delta[0], @position[1]+delta[1]]
       if is_valid?(possible_position)
@@ -29,6 +30,7 @@ class Piece
 
   def perform_jump(stop)
     possible_positions = []
+    # REV: these two lines are unnecessary
     jump_deltas = move_diffs_jump
     slide_deltas = move_diffs_slide
     curr_x, curr_y = @position
@@ -38,6 +40,7 @@ class Piece
       adjacent_x, adjacent_y = slide_deltas[index]
       middle_position=[curr_x + adjacent_x, curr_y + adjacent_y]
 
+      # REV: this check could be a separate method
       if @board[middle_position] && is_valid?(possible_position) && (@board[middle_position].color != @color)
         possible_positions << possible_position
       end
@@ -62,12 +65,14 @@ class Piece
 
   def perform_moves!(move_sequence)
     if move_sequence.length == 1
+      # you could combine these next two lines with short circuiting, like we heard about in the solution talk today: unless perform_slide(...) || perform_jump(...), raise error,end
       if !perform_slide(move_sequence[0])
         if !perform_jump(move_sequence[0])
           raise InvalidMoveError
         end
       end
     else
+      # REV: why with index?
       move_sequence.each_with_index do |position, index|
         raise InvalidMoveError if !perform_jump(position)
       end
@@ -77,6 +82,7 @@ class Piece
   def valid_move_seq?(move_sequence)
 
     duped_board = @board.dup
+    # REV: Not sure if I get this. I think your Board#dup method gives the new board new pieces in the same places where the old board had them. If so, it would seem that this next line is duplicating the old-board piece again and putting the duplicate on the new board, even though the new board alread has a duplicat from Board#dup. You could just say first_piece = duped_board[self.position].
     first_piece = self.dup
     first_piece.board = duped_board
     begin
@@ -104,6 +110,7 @@ class Piece
      [(start[0] + stop[0])/2, (start[1] + stop[1])/2]
   end
 
+  # REV: These could be combined. At the very least, you could change move_diffs_jump to move_diffs_slide.map & just multiply all the numbers by 2.
   def move_diffs_slide
     if @king
       [ [1, 1], [-1, 1], [1, -1], [-1, -1] ]
@@ -124,6 +131,8 @@ class Piece
     end
   end
 
+  # REV: seems like a board method, since it checks the board state. Also, you could do position.all? { |coordinate| coordinate.between?(0, 7)}
+  # REV: also, 7 is a 'magic number' of the sort Jonathan talked about in today's solution talk. It would make the code easier for an outsider to read if you gave Board an instance variable like 'size' or 'dimension' and then used that here.
   def is_valid?(position)
     x, y = position
     if @board[position].nil? && x.between?(0, 7) && y.between?(0, 7)
